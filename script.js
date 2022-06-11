@@ -40,6 +40,7 @@ function submitCustomerName() {
 }
 
 function getConsumable() {
+    // Get Consumable (Food / Beverage)
     axios.get("dbquery.php", {
         params: {
             "consumables": true,
@@ -77,6 +78,7 @@ function getConsumableTypes() {
     consumableTypeDropdown.disabled = false;
     qtyField.hidden = false;
 
+    // Get Subtypes of Consumable
     axios.get("dbquery.php", {
         params: {
             "consumable-type": consumableType,
@@ -107,12 +109,13 @@ function showConsumableTypes(response, consumableType) {
 function getItems() {
     var consumableType = document.getElementById("consumable").value;
     var itemType = document.getElementById("consumable-type").value;
-    
+
     if (itemType == 'starter') {
         document.getElementById("item-list").innerHTML = '';
         return;
     }
 
+    // Get Item List of Consumable
     axios.get("dbquery.php", {
         params: {
             "items": [itemType, consumableType],
@@ -126,8 +129,6 @@ function showItems(response) {
     var result = response;
     var itemList = document.getElementById("item-list");
     var layout = '';
-
-    console.log(result);
 
     for (i in result.data) {
         layout += result.data[i][3] + result.data[i].calories + "Calories" + "<img src=\"" + result.data[i].image + "\" width=\"50\" height=\"50\">" + "<br>";
