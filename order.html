@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Starbucks POS</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
-</head>
+    <script src="axios.js" type="text/javascript"></script>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <h1>Welcome to Starbucks!</h1>
-        <hr />
-        <h3>We'll take your order</h3>
-        <div id="name-input">
-            <label for="customer-name">Your name is?</label>
-            <br />
-            <input type="text" name="customer-name" id="customer-name" placeholder="Enter your name" />
-            <button id="enter-name">Continue</button>
-            <span id="error-message"></span>
-        </div>
-        <div id="name-field"></div>
+      <h1>Welcome to Starbucks!</h1>
+      <hr />
+      <h3>We'll take your order</h3>
+      <div id="name-input">
+        <label for="customer-name">Your name is?</label>
         <br />
-        <div id="customer-choice" hidden>
-            <select name="consumable" id="consumable">
-                <option value="starter" selected>-- Select consumable type --</option>
-                <option value="type-beverage">Beverage</option>
-                <option value="type-food">Food</option>
-            </select>
-            <select name="beverage" id="beverage" disabled hidden>
-                <option value="starter" selected>-- Select beverage --</option>
-            </select>
-            <select name="food" id="food" disabled hidden>
-                <option value="starter" selected>-- Select food --</option>
-            </select>
-            <span id="qty-field" hidden>
-                <label for="consumable-qty">Qty</label>
-                <input type="text" name="consumable-qty" id="consumable-qty" size="2px" />
-            </span>
-            <span id="back-name"><a href="#">Back</a></span>
-        </div>
-        <hr />
-        <table id="customer-cart" name="customer-cart" width="500" hidden>
-            <tr>
-                <td>Item #</td>
-                <td>Item Name</td>
-                <td>Price</td>
-                <td>Qty</td>
-                <td>Amount</td>
-            </tr>
-        </table>
-        <p>Total Amount Due: 0.00</p>
-        <button id="add">Add to Cart</button>
-        <button id="checkout">Check Out</button>
-        <div id="receipt"></div>
+        <input
+          type="text"
+          name="customer-name"
+          id="customer-name"
+          placeholder="Enter your name"
+        />
+        <button id="enter-name">Continue</button>
+        <span id="error-message"></span>
+      </div>
+      <div id="name-field"></div>
+      <br />
+      <div id="customer-choice" hidden>
+        <select name="consumable" id="consumable">
+          <option value="starter" selected>-- Select consumable type --</option>
+        </select>
+        <select
+          name="consumable-type"
+          id="consumable-type"
+          disabled
+          hidden
+        ></select>
+        <span id="qty-field" hidden>
+          <label for="consumable-qty">Qty</label>
+          <input
+            type="text"
+            name="consumable-qty"
+            id="consumable-qty"
+            size="2px"
+          />
+        </span>
+        <span id="back-name"><a href="#">Back</a></span>
+      </div>
+      <hr />
+      <div id="item-list"></div>
+      <table id="customer-cart" name="customer-cart" width="500" hidden>
+        <tr>
+          <td>Item #</td>
+          <td>Item Name</td>
+          <td>Price</td>
+          <td>Qty</td>
+          <td>Amount</td>
+        </tr>
+      </table>
+      <p>Total Amount Due: 0.00</p>
+      <button id="add">Add to Cart</button>
+      <button id="checkout">Check Out</button>
+      <div id="receipt"></div>
     </div>
-</body>
-<script src="script.js"></script>
-
+  </body>
+  <script src="script.js"></script>
 </html>

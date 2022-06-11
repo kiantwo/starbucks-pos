@@ -8,6 +8,10 @@ table {
     margin-right: auto;
 }
 
+img {
+    border-radius: 50%;
+  }
+
 .container {
     background-color: white;
     margin: auto;
