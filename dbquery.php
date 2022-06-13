@@ -40,11 +40,11 @@ else if(isset($_GET['item-specific'])) {
     $consumableType = $_GET['item-specific'][1];
     $result[] = array();
 
-    if($consumableType = '100') {
+    if($consumableType == '100') {
         $result = $db->select(['bevMenuID', 'bevSizeID', 'price'])->from('beverage_menu')->where('beverageID', $item)->getAll();
     }
 
-    else if($consumableType = '101') {
+    else if($consumableType == '101') {
         $result = $db->select(['foodMenuID', 'price'])->from('food_menu')->where('foodID', $item)->getAll();
     }
 

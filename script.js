@@ -122,6 +122,8 @@ function getItems() {
     var consumableType = document.getElementById("consumable").value;
     var itemType = document.getElementById("consumable-type").value;
 
+    console.log(consumableType);
+
     if (itemType == 'starter') {
         document.getElementById("item-list").innerHTML = '';
         return;
@@ -142,7 +144,6 @@ function showItems(response) {
     var result = response;
     var itemList = document.getElementById("item-list");
     var consumableTypeDropdown = document.getElementById("consumable-type");
-    var consumableDropdown = document.getElementById("consumable");
     var consumableType = consumableTypeDropdown.options[consumableTypeDropdown.selectedIndex].text;
 
     itemList.innerHTML = `<tr>
@@ -150,18 +151,11 @@ function showItems(response) {
     </tr>`
 
     for (var i in result.data) {
-        var item = [result.data[i].image, result.data[i][3], result.data[i][4]];
-        if (consumableDropdown.value == '100') {
-            item.push(result.data[i].calories);
-        }     
-        else {
-            item.push(null);
-        }
-
+        var item = [result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
+        var calories = result.data[i].calories ? `${result.data[i].calories} Calories` : '';
         itemList.innerHTML += `<tr>
         <td width="40%"> <img src="${result.data[i].image}" width="150" height="150"> </td>  
-        <td width="25%"> <h3> ${result.data[i][3]} </h3>
-        ${result.data[i].calories} Calories </td>
+        <td width="25%"> <h3> ${result.data[i][3]} </h3> ${calories} </td>
         <td> <button id="${result.data[i][0]}" name="${item}" onclick="showModal()">Add to Cart</button> </td>
         </tr>
         `
@@ -197,14 +191,15 @@ function showItemDetails(response, item) {
     var modalTable = document.getElementById('item-details');
     var consumableType = document.getElementById("consumable").value;
     var result = response;
+    var calories = item.calories ? `${item.calories} Calories` : '';
+
+    console.log(result);
 
     modalTable.innerHTML = `<tr>
     <td> <h3> Order </h3> </td>
     </tr>
     <tr>
-    <td colspan="3"> <h2>${item.name}</h2>
-    ${item.calories} Calories
-    </td>
+    <td colspan="3"> <h2>${item.name}</h2> ${calories} </td>
     </tr>
     <td> <img src="${item.image}" width="200" height="200"> </td>
     `;
@@ -234,6 +229,14 @@ function showItemDetails(response, item) {
             `
         }
     }
+
+    else {
+        modalTable.innerHTML += `<td>${item.desc}</td>
+        <tr>
+        <td>Price: <b>₱${result.data[0].price}<b></td>
+        </tr>
+        `;
+    }
     modalTable.innerHTML += `<tr>
     <td> <button id="confirm" onclick="confirmAddToCart()">Confirm</button> </td>
     </tr>
@@ -241,7 +244,7 @@ function showItemDetails(response, item) {
 }
 
 function confirmAddToCart() {
-    
+
 }
 
 function backToNameInput() {
