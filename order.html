@@ -10,6 +10,12 @@
   </head>
 
   <body>
+    <div id="myModal" class="modal">
+      <div id="modal-content" class="modal-content">
+        <span class="close">&times;</span>
+        <table id="item-details"></table>
+      </div>
+    </div>
     <div class="container">
       <h1>Welcome to Starbucks!</h1>
       <hr />
@@ -38,19 +44,10 @@
           disabled
           hidden
         ></select>
-        <span id="qty-field" hidden>
-          <label for="consumable-qty">Qty</label>
-          <input
-            type="text"
-            name="consumable-qty"
-            id="consumable-qty"
-            size="2px"
-          />
-        </span>
         <span id="back-name"><a href="#">Back</a></span>
       </div>
       <hr />
-      <div id="item-list"></div>
+      <table id="item-list"></table>
       <table id="customer-cart" name="customer-cart" width="500" hidden>
         <tr>
           <td>Item #</td>
@@ -61,8 +58,8 @@
         </tr>
       </table>
       <p>Total Amount Due: 0.00</p>
-      <button id="add">Add to Cart</button>
       <button id="checkout">Check Out</button>
+      <button id="clear">Clear Cart</button>
       <div id="receipt"></div>
     </div>
   </body>

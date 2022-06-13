@@ -82,7 +82,7 @@ class DBLibrary implements IDBFuncs
             $recordset = $dbStatement->fetchAll(PDO::FETCH_BOTH);
 
         $whereInstanceCounter = 0;
-        
+
         return $recordset != false ? $recordset : [];
     }
 

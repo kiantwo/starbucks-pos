@@ -10,6 +10,17 @@ function initComponents() {
     // Load Consumable Types on windowLoad
     document.getElementById("consumable").addEventListener('change', getConsumableTypes);
     document.getElementById("consumable-type").addEventListener('change', getItems);
+    document.getElementsByClassName("close")[0].addEventListener('click',
+        function () {
+            var modal = document.getElementById("myModal")
+            modal.style.display = "none";
+        });
+    window.onclick = function (event) {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 }
 
 function submitCustomerName() {
@@ -30,7 +41,7 @@ function submitCustomerName() {
     // document.getElementById("customer-cart").hidden = false;
     document.getElementById("name-input").hidden = true;
 
-    layout += `<table width="500"><tr>
+    layout += `<table id="name-table" width="500"><tr>
     <td>Customer ID: 2019010822</td>
     <td>Customer Name: ` + customerName + `</td>
     </tr></table>
@@ -51,6 +62,7 @@ function getConsumable() {
 }
 
 function showConsumables(response) {
+    // Show Consumable (Food / Beverage)
     var result = response;
     for (i in result.data) {
         var option = document.createElement("option");
@@ -64,19 +76,18 @@ function showConsumables(response) {
 function getConsumableTypes() {
     var consumableType = document.getElementById("consumable").value;
     var consumableTypeDropdown = document.getElementById("consumable-type");
-    var qtyField = document.getElementById("qty-field");
+
+    document.getElementById("item-list").innerHTML = '';
 
     if (consumableType == 'starter') {
         // Reset values to blank
         consumableTypeDropdown.hidden = true;
         consumableTypeDropdown.disabled = true;
-        qtyField.hidden = true;
         return;
     }
 
     consumableTypeDropdown.hidden = false;
     consumableTypeDropdown.disabled = false;
-    qtyField.hidden = false;
 
     // Get Subtypes of Consumable
     axios.get("dbquery.php", {
@@ -89,6 +100,7 @@ function getConsumableTypes() {
 }
 
 function showConsumableTypes(response, consumableType) {
+    // Show Consumable SubTypes
     var result = response;
     var type = consumableType == '100' ? 'beverage' : 'food';
     layout = `
@@ -126,15 +138,110 @@ function getItems() {
 }
 
 function showItems(response) {
+    // Show Item List
     var result = response;
     var itemList = document.getElementById("item-list");
-    var layout = '';
+    var consumableTypeDropdown = document.getElementById("consumable-type");
+    var consumableDropdown = document.getElementById("consumable");
+    var consumableType = consumableTypeDropdown.options[consumableTypeDropdown.selectedIndex].text;
 
-    for (i in result.data) {
-        layout += result.data[i][3] + result.data[i].calories + "Calories" + "<img src=\"" + result.data[i].image + "\" width=\"50\" height=\"50\">" + "<br>";
+    itemList.innerHTML = `<tr>
+    <td colspan="3"><h2>${consumableType} </h2></td>
+    </tr>`
+
+    for (var i in result.data) {
+        var item = [result.data[i].image, result.data[i][3], result.data[i][4]];
+        if (consumableDropdown.value == '100') {
+            item.push(result.data[i].calories);
+        }     
+        else {
+            item.push(null);
+        }
+
+        itemList.innerHTML += `<tr>
+        <td width="40%"> <img src="${result.data[i].image}" width="150" height="150"> </td>  
+        <td width="25%"> <h3> ${result.data[i][3]} </h3>
+        ${result.data[i].calories} Calories </td>
+        <td> <button id="${result.data[i][0]}" name="${item}" onclick="showModal()">Add to Cart</button> </td>
+        </tr>
+        `
     }
+}
 
-    itemList.innerHTML = layout;
+function showModal() {
+    // Open Order Modal
+    var activeButton = this.document.activeElement;
+    var activeButtonName = activeButton.name.split(',');
+    var item = {
+        'id': activeButton.id,
+        'image': activeButtonName[0],
+        'name': activeButtonName[1],
+        'desc': activeButtonName[2],
+        'calories': activeButtonName[3]
+    };
+    var consumableType = document.getElementById("consumable").value;
+    var modal = document.getElementById("myModal");
+    modal.style.display = "block";
+
+    axios.get("dbquery.php", {
+        params: {
+            "item-specific": [item['id'], consumableType],
+        },
+    })
+        .then((response) => showItemDetails(response, item))
+        .catch((error) => console.log(error));
+}
+
+function showItemDetails(response, item) {
+    // Show Item Details in Modal
+    var modalTable = document.getElementById('item-details');
+    var consumableType = document.getElementById("consumable").value;
+    var result = response;
+
+    modalTable.innerHTML = `<tr>
+    <td> <h3> Order </h3> </td>
+    </tr>
+    <tr>
+    <td colspan="3"> <h2>${item.name}</h2>
+    ${item.calories} Calories
+    </td>
+    </tr>
+    <td> <img src="${item.image}" width="200" height="200"> </td>
+    `;
+
+    if (consumableType == '100') {
+        modalTable.innerHTML += `
+        <td>
+        ${item.desc}
+        <h3>Choose beverage size: </h3>
+        </td>
+        `;
+        for (var i in result.data) {
+            var size = '';
+            if (result.data[i].bevSizeID == '130') {
+                size = 'Tall';
+            }
+            else if (result.data[i].bevSizeID == '131') {
+                size = 'Grande';
+            }
+            else {
+                size = 'Venti';
+            }
+            modalTable.innerHTML += `<td>
+            <label for="${result.data[i].bevMenuID}">${size}: ₱${result.data[i].price}</label>
+            <input type="radio" id="${result.data[i].bevMenuID}" name="size" value="${result.data[i].bevMenuID}">
+            </td>
+            `
+        }
+    }
+    modalTable.innerHTML += `<tr>
+    <td> <button id="confirm" onclick="confirmAddToCart()">Confirm</button> </td>
+    </tr>
+    `
+}
+
+function confirmAddToCart() {
+    
 }
 
 function backToNameInput() {
@@ -143,5 +250,6 @@ function backToNameInput() {
     document.getElementById("customer-choice").hidden = true;
     document.getElementById("name-input").hidden = false;
     document.getElementById("name-field").innerHTML = '';
+    document.getElementById("item-list").innerHTML = '';
     // document.getElementById("customer-cart").hidden = true;
 }
