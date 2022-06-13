@@ -1,20 +1,34 @@
 <?php
 
 class Food extends Consumable implements iConsumable{
-    #120 = Salad, 121 = Cake, 122, Wrap
-    public int $foodTypeId;
-    private String $foodName;
-    private $dbConnection;
 
-    public function __construct($db){
-        $this->dbConnection = $db;
-    }	
+    private $foodType;
+    private $foodName;
+    private $foodImage;
+    private $foodPrice;
 
-
-    public function getFoodTypeId($id){
-        $this->foodTypeId = $id;
-
-        return $this->foodTypeId;
+    public function __construct(){
+        if (func_num_args() == 4) {
+            $this->foodType = func_get_arg(0);
+            $this->foodName = func_get_arg(1);
+            $this->foodImage = func_get_arg(2);
+            $this->foodPrice = func_get_arg(3);
+          }
     }
+
+    public function getType(){
+        return $this->foodType;
+    }
+    public function getImage(){
+        return $this->foodImage;
+    }
+    public function getPrice(){
+        return $this->$foodPrice;
+    }
+    public function getName(){
+        return $this->$foodName;
+    }
+
+    
 
 }

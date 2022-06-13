@@ -101,6 +101,18 @@ function getConsumable() {
     // TODO: Axios request to SQL
 }
 
+// function showMenuItems(response){
+//     var result = response;
+//     // var teaType = ['Iced Tea', 'TeaTea'];
+//     var menuItems = document.getElementById("TeaItems");
+
+//     for(data in result.data){
+
+//     }
+    
+    
+// }
+
 function backToNameInput() {
     // Show order choices
     document.getElementById("error-message").innerHTML = "";

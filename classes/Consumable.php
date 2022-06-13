@@ -4,9 +4,9 @@ require_once 'autoload.php';
 
 class Consumable implements iConsumable{
 
-    private int $consumableId;
+    private string $consumableId;
     private int $foodTypeId;
-    private int $bevTypeId;
+    // private int $bevTypeId;
     private int $foodId;
     private int $bevId;
     
@@ -15,7 +15,5 @@ class Consumable implements iConsumable{
         $consumableId = $id;
         return $this->consumableId;
     }
-
-
 
 }
