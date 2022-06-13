@@ -2,6 +2,7 @@ initComponents();
 
 // Initialize on startup
 function initComponents() {
+    // Load consumable
     window.addEventListener("load", getConsumable);
     document
         .getElementById("enter-name")
@@ -10,11 +11,15 @@ function initComponents() {
     // Load Consumable Types on windowLoad
     document.getElementById("consumable").addEventListener('change', getConsumableTypes);
     document.getElementById("consumable-type").addEventListener('change', getItems);
+
+    // Close modal onclick of X
     document.getElementsByClassName("close")[0].addEventListener('click',
         function () {
             var modal = document.getElementById("myModal")
             modal.style.display = "none";
         });
+
+    // Close modal onclick of background window
     window.onclick = function (event) {
         var modal = document.getElementById("myModal");
         if (event.target == modal) {
@@ -146,11 +151,13 @@ function showItems(response) {
     var consumableTypeDropdown = document.getElementById("consumable-type");
     var consumableType = consumableTypeDropdown.options[consumableTypeDropdown.selectedIndex].text;
 
+    // Header
     itemList.innerHTML = `<tr>
     <td colspan="3"><h2>${consumableType} </h2></td>
     </tr>`
 
     for (var i in result.data) {
+        // Item rows, columns, and data
         var item = [result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
         var calories = result.data[i].calories ? `${result.data[i].calories} Calories` : '';
         itemList.innerHTML += `<tr>
@@ -166,6 +173,9 @@ function showModal() {
     // Open Order Modal
     var activeButton = this.document.activeElement;
     var activeButtonName = activeButton.name.split(',');
+    var consumableType = document.getElementById("consumable").value;
+    var modal = document.getElementById("myModal");
+    // Store activeElement data to pass
     var item = {
         'id': activeButton.id,
         'image': activeButtonName[0],
@@ -173,8 +183,7 @@ function showModal() {
         'desc': activeButtonName[2],
         'calories': activeButtonName[3]
     };
-    var consumableType = document.getElementById("consumable").value;
-    var modal = document.getElementById("myModal");
+
     modal.style.display = "block";
 
     axios.get("dbquery.php", {
@@ -193,8 +202,6 @@ function showItemDetails(response, item) {
     var result = response;
     var calories = item.calories ? `${item.calories} Calories` : '';
 
-    console.log(result);
-
     modalTable.innerHTML = `<tr>
     <td> <h3> Order </h3> </td>
     </tr>
@@ -205,6 +212,7 @@ function showItemDetails(response, item) {
     `;
 
     if (consumableType == '100') {
+        // Details if Consumable is Beverage
         modalTable.innerHTML += `
         <td>
         ${item.desc}
@@ -231,12 +239,14 @@ function showItemDetails(response, item) {
     }
 
     else {
+        // Details if Consumable is Food
         modalTable.innerHTML += `<td>${item.desc}</td>
         <tr>
         <td>Price: <b>₱${result.data[0].price}<b></td>
         </tr>
         `;
     }
+    // Submit Button
     modalTable.innerHTML += `<tr>
     <td> <button id="confirm" onclick="confirmAddToCart()">Confirm</button> </td>
     </tr>
@@ -244,7 +254,7 @@ function showItemDetails(response, item) {
 }
 
 function confirmAddToCart() {
-
+    // TODO: Add Active Item to Cart Table
 }
 
 function backToNameInput() {
