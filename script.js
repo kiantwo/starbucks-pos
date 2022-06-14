@@ -253,7 +253,7 @@ function showItemDetails(response, item) {
     `
 }
 
-function confirmAddToCart() {
+function addToCart() {
     // TODO: Add Active Item to Cart Table
 }
 
