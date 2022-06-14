@@ -89,7 +89,7 @@ function getConsumableTypes() {
         consumableTypeDropdown.hidden = true;
         consumableTypeDropdown.disabled = true;
         return;
-    }
+    } 
 
     consumableTypeDropdown.hidden = false;
     consumableTypeDropdown.disabled = false;
