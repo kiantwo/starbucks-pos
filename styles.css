@@ -35,6 +35,8 @@ td {
 
 .my-float{
 	margin-top:20px;
+    font-weight: bold;
+    font-size: 14pt;
 }
 
 td > h3, td > h2, td > p {
@@ -75,39 +77,39 @@ img {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
+}
   
   /* Modal Content/Box */
-  .modal-content {
+.modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
-  }
+}
   
   /* The Close Button */
-  .close {
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
+}
   
-  .close:hover,
-  .close:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
 
-  #cart-item {
+#cart-item {
     height: 100%;
     width: 100%;
     background-color: rgb(228, 228, 228);
-  }
+}
 
-  #delete-item {
+#delete-item {
     font-size: 10pt;
     color: red;
-  }
+}

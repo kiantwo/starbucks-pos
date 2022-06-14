@@ -40,8 +40,8 @@ class Session {
         }           
     }
 
-    public static function remove($key){
-            unset($_SESSION[$key]);
+    public static function remove($key, $indexList = null){
+            unset($_SESSION[$key][$indexList]);
         return true;
     }
 

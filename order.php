@@ -12,8 +12,26 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 if(isset($data['add'])) {
     $item = $data['item'];
+    $result = array();
     $cart->addToCart($item);
-    echo count($_SESSION['items']);
+
+    $result[] = count($_SESSION['items']);
+    $result[] = getSessionPrice();
+
+    $jsonResult = json_encode($result);
+    echo $jsonResult;
+}
+
+else if(isset($data['remove'])) {
+    $itemIndex = $data['index'];
+    $result = array();
+    $cart->removeFromCart($itemIndex);
+
+    $result[] = count($_SESSION['items']);
+    $result[] = getSessionPrice();
+
+    $jsonResult = json_encode($result);
+    echo $jsonResult;
 }
 
 else if(isset($data['clear'])) {
@@ -27,8 +45,23 @@ if(isset($_GET['cart'])) {
 
 else if(isset($_GET['session'])) {
     if (Session::has('items')) {
-        echo count($_SESSION['items']);
+        $result = array();
+        $result[] = count($_SESSION['items']);
+        $result[] = getSessionPrice();
+
+        $jsonResult = json_encode($result);
+        echo $jsonResult;
     } else {
         echo false;
     }
+}
+
+function getSessionPrice() {
+    $session = $_SESSION['items'];
+    $sum = 0;
+    foreach($session as $key => $value) {
+        $sum += $session[$key]["price"];
+    }
+
+    return $sum;
 }
