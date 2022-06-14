@@ -20,11 +20,24 @@ td {
     text-align: center;
 }
 
-/* #item-list
-{
-    border-collapse:separate;
-    border-spacing:0 25px;
-} */
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color: white;
+	color:rgb(131, 131, 131);
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:20px;
+    font-weight: bold;
+    font-size: 14pt;
+}
 
 td > h3, td > h2, td > p {
     margin: 0;
@@ -44,7 +57,7 @@ img {
     height: auto;
 }
 
-#error-message {
+#error-message, #confirm-error {
     color: red;
 }
 
@@ -64,28 +77,39 @@ img {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
+}
   
   /* Modal Content/Box */
-  .modal-content {
+.modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
-  }
+}
   
   /* The Close Button */
-  .close {
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
+}
   
-  .close:hover,
-  .close:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
+
+#cart-item {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(228, 228, 228);
+}
+
+#delete-item {
+    font-size: 10pt;
+    color: red;
+}
