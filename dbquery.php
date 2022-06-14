@@ -36,8 +36,9 @@ else if(isset($_GET['items'])) {
 }
 
 else if(isset($_GET['item-specific'])) {
-    $item = $_GET['item-specific'][0];
-    $consumableType = $_GET['item-specific'][1];
+    // Get Item's details in menu table
+    $item = $_GET['item-specific'][0];  // ItemID
+    $consumableType = $_GET['item-specific'][1];    // Type of consumable (beverage or food)
     $result[] = array();
 
     if($consumableType == '100') {
