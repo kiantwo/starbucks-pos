@@ -93,6 +93,7 @@ function submitCustomerName() {
     document.getElementById("customer-choice").hidden = false;
     // document.getElementById("customer-cart").hidden = false;
     document.getElementById("name-input").hidden = true;
+    document.getElementById('no-cart-error').innerHTML = '';
 
     layout += `<table id="name-table" width="500"><tr>
     <td>Customer Name: ` + customerName + `</td>
@@ -458,6 +459,7 @@ function startCheckOut() {
     var cartLength = parseInt(document.getElementById('my-float').innerHTML);
 
     if (cartLength > 0) {
+        document.getElementById('no-cart-error').innerHTML = '';
         axios.post("dbquery.php", {
             "start-checkout": true,
             "name": customerName,
@@ -467,7 +469,7 @@ function startCheckOut() {
     }
 
     else {
-        console.log('Please pick items to order');
+        document.getElementById('no-cart-error').innerHTML = 'Please pick items to order.';
     }
 }
 
@@ -532,10 +534,10 @@ function showReceipt(response) {
     <td colspan="3"><h3>Thank you for your purchase!</h3></td>
     </tr>
     <tr>
-    <td>${customerName}</td>
+    <td colspan="3"><hr></td>
     </tr>
     <tr>
-    <td colspan="3"><hr></td>
+    <td>${customerName}</td>
     </tr>
     <tr>
     <td><b>Qty</b></td>

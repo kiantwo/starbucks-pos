@@ -57,7 +57,9 @@ img {
     height: auto;
 }
 
-#error-message, #confirm-error {
+#error-message, 
+#confirm-error, 
+#no-cart-error {
     color: red;
 }
 
