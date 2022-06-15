@@ -1,6 +1,10 @@
 <?php
+include "autoload.php";
 require_once 'classes/IDBFuncs.php';
 require_once 'classes/DBLibrary.php';
+require_once "Sessions/Session.php";
+
+use Sessions\Session;
 
 try {
     $dbSource = new PDO('mysql:host=localhost;dbname=starbucks','root','');
@@ -9,6 +13,8 @@ try {
 }
 
 $db = new DBLibrary($dbSource);
+
+$data = json_decode(file_get_contents("php://input"), true);
 
 if(isset($_GET['consumables'])) {
     // Get Consumable (Food/Beverage)
@@ -47,6 +53,71 @@ else if(isset($_GET['item-specific'])) {
 
     else if($consumableType == '101') {
         $result = $db->select(['foodMenuID', 'price'])->from('food_menu')->where('foodID', $item)->getAll();
+    }
+
+    $jsonResult = json_encode($result);
+    echo $jsonResult;
+}
+
+else if(isset($_GET['order'])) {
+    $orderID = $_GET['id'];
+    $result = $db->select()->from('order_detail')->where('orderID', $orderID)->getAll();
+    $innerResult = array();
+    
+    foreach($result as $key => $value) {
+        $itemMenu = $result[$key];
+
+        if(!empty($itemMenu['bevMenuID'])) {
+            $menuResult = $db->select(['beverageID', 'bevSizeID'])->from('beverage_menu')->where('bevMenuID', $itemMenu['bevMenuID'])->get();
+            $innerResult = $db->select(['beverageName'])->from('beverage')->where('beverageID', $menuResult['beverageID'])->get();
+
+            $result[$key]['size'] = $menuResult['bevSizeID'];
+        }
+
+        else if(!empty($itemMenu['foodMenuID'])) {
+            $menuResult = $db->select(['foodID'])->from('food_menu')->where('foodMenuID', $itemMenu['foodMenuID'])->get();
+            $innerResult = $db->select(['foodName'])->from('food')->where('foodID', $menuResult['foodID'])->get();
+        }
+
+        $result[$key]['name'] = $innerResult[0];
+    }
+    $jsonResult = json_encode($result);
+    echo $jsonResult;
+}
+
+if(isset($data['start-checkout'])) {
+    // Store session data to database
+    $customerName = $data['name'];
+    $todayDate = $data['date'];
+    $result = $db->table('order_header')->insert([0, $customerName, $todayDate]);
+
+    $jsonResult = json_encode($result);
+    echo $jsonResult;
+}
+
+else if(isset($data['checkout'])) {
+    Session::start();
+    $orderID = $data['id'];
+    $session = $_SESSION['items'];
+
+    foreach($session as $key => $value) {
+        $item = $session[$key];
+        $bevMenuID = null;
+        $foodMenuID = null;
+        $price = $item->getPrice();
+        $qty = $item->getQty();
+
+        if(is_subclass_of($item, 'Beverage')) {
+            $bevMenuID = $item->getID();
+        }
+
+        else if(is_subclass_of($item, 'Food')) {
+            $foodMenuID = $item->getID();
+        }
+
+        $price = $price * $qty;
+
+        $result = $db->table('order_detail')->insert([$orderID, $bevMenuID, $foodMenuID, $price, $qty]);
     }
 
     $jsonResult = json_encode($result);

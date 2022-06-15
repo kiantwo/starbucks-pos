@@ -20,11 +20,32 @@
       <p id="my-float" class="my-float"></p>
     </a>
     <div id="cart-modal" class="modal">
-        <div id="modal-content" class="modal-content">
-          <span class="close">&times;</span>
-          <table id="cart-details"></table>
-        </div>
+      <div id="modal-content" class="modal-content">
+        <span class="close">&times;</span>
+        <table id="cart-details"></table>
       </div>
+    </div>
+    <div id="receipt-modal" class="modal">
+      <div id="modal-content" class="modal-content">
+        <span class="close">&times;</span>
+        <table id="customer-cart" name="customer-cart" width="500">
+          <tr>
+            <td colspan="3"><h3>Receipt</h3></td>
+          </tr>
+          <tr>
+            <td colspan="3"><h3>Thank you for your purchase!</h3></td>
+          </tr>
+          <tr>
+            <td><span id="order-name"></span></td>
+          </tr>
+          <tr>
+            <td><b>Qty</b></td>
+            <td><b>Item</b></td>
+            <td><b>Amount</b></td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <div class="container">
       <h1>Welcome to Starbucks!</h1>
       <hr />
@@ -57,16 +78,7 @@
       </div>
       <hr />
       <table id="item-list"></table>
-      <table id="customer-cart" name="customer-cart" width="500" hidden>
-        <tr>
-          <td>Item #</td>
-          <td>Item Name</td>
-          <td>Price</td>
-          <td>Qty</td>
-          <td>Amount</td>
-        </tr>
-      </table>
-      <hr>
+      <hr />
       <p><b>Total Amount: </b> ₱<span id="total-amt">0.00</span></p>
       <button id="checkout">Check Out</button>
       <button id="clear">Clear Cart</button>

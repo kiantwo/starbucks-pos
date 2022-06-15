@@ -28,10 +28,16 @@ function initComponents() {
         modal.style.display = "none";
     })
 
+    closeButtons[2].addEventListener('click', function () {
+        var modal = document.getElementById('receipt-modal');
+        modal.style.display = "none";
+    })
+
     // Close modal onclick of background window
     window.onclick = function (event) {
         var modal = document.getElementById("myModal");
         var cartModal = document.getElementById('cart-modal');
+        var receiptModal = document.getElementById('receipt-modal');
         if (event.target == modal) {
             modal.style.display = "none";
         }
@@ -39,8 +45,13 @@ function initComponents() {
         else if (event.target == cartModal) {
             cartModal.style.display = "none";
         }
+
+        else if (event.target == receiptModal) {
+            receiptModal.style.display = "none";
+        }
     }
     document.getElementById('float').addEventListener('click', showCartModal);
+    document.getElementById('checkout').addEventListener('click', startCheckOut);
     document.getElementById('clear').addEventListener('click', clearCart);
 
 }
@@ -184,7 +195,7 @@ function showItems(response) {
     var itemList = document.getElementById("item-list");
     var consumableTypeDropdown = document.getElementById("consumable-type");
     var consumableType = consumableTypeDropdown.options[consumableTypeDropdown.selectedIndex].text;
-    
+
     // Header
     itemList.innerHTML = `<tr>
     <td colspan="3"><h2>${consumableType} </h2></td>
@@ -309,8 +320,6 @@ function addToCart(item, itemMenu) {
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
 
-    console.log(itemMenu);
-
     // Store item details and itemMenu ID
     var itemDetails = {
         'id': itemMenu[0],
@@ -318,7 +327,7 @@ function addToCart(item, itemMenu) {
         'name': item.name,
         'image': item.image,
         'price': itemMenu.price,
-        'qty':1
+        'qty': 1
     }
 
     if (consumableType == '100') {
@@ -395,22 +404,22 @@ function showCartItems(response) {
     <td colspan="4"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
     </tr>
     <tr>
-    <td colspan="4"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
+    <td colspan="4"><button id="checkout" onclick="startCheckOut()">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
     </tr>
     `
 }
 
 function addMinusQuanitity() {
     // Remove item from Session Cart
-    var index = this.document.activeElement.name;  
+    var index = this.document.activeElement.name;
     var method = this.document.activeElement.id;
-    
+
     // Get index of item in Session Cart
     axios.all([
-        axios.post("order.php", { "method": method,"index" : index}),
+        axios.post("order.php", { "method": method, "index": index }),
         axios.get("order.php", { params: { "cart": true } })
     ]).then(function (response) {
-           // Result of Post Request
+        // Result of Post Request
         console.log(response);
         console.log('testing');
     }).catch((error) => console.log(error));
@@ -427,7 +436,7 @@ function removeFromCart() {
     ]).then(function (response) {
         var removeResult = response[0];     // Result of Post Request
         var getResult = response[1];        // Result of Get Request
-        if(removeResult.data[0] == 0) {
+        if (removeResult.data[0] == 0) {
             // Reset to defaults and elements if cart is empty
             document.getElementById('float').hidden = true;
             document.getElementById('cart-modal').style.display = "none";
@@ -442,22 +451,123 @@ function removeFromCart() {
     }).catch((error) => console.log(error));
 }
 
+function startCheckOut() {
+    // Store to orderheader table
+    var customerName = document.getElementById('customer-name').value;
+    var todayDate = new Date().toISOString().slice(0, 10);
+    var cartLength = parseInt(document.getElementById('my-float').innerHTML);
+
+    if (cartLength > 0) {
+        axios.post("dbquery.php", {
+            "start-checkout": true,
+            "name": customerName,
+            "date": todayDate,
+        }).then((response) => checkOut(response))
+            .catch((error) => console.log(error));
+    }
+
+    else {
+        console.log('Please pick items to order');
+    }
+}
+
+function checkOut(response) {
+    var result = response;
+
+    axios.post("dbquery.php", {
+        "checkout": true,
+        "id": result.data
+    }).then(function (response) {
+        clearCart();
+        getReceipt(result.data);
+    }).catch((error) => console.log(error));
+}
+
 function clearCart() {
     // Clear all items in Session Cart
     var float = document.getElementById('float');
     var cartModal = document.getElementById('cart-modal');
     var totalAmt = document.getElementById('total-amt');
+    var cartLength = document.getElementById('my-float');
 
     // Reset elements to default
     totalAmt.innerHTML = parseFloat(0).toFixed(2);
     float.hidden = float.hidden == false ? true : true;
     cartModal.style.display = "none";
+    cartLength.innerHTML = null;
 
     axios.post("order.php", {
         "clear": true,
     })
         .then(console.log('Cleared cart'))
         .catch((error) => console.log(error));
+}
+
+function getReceipt(orderID) {
+    var id = orderID;
+
+    axios.get("dbquery.php", {
+        params: {
+            "order": true,
+            "id": id
+        }
+    }).then(function (response) {
+        showReceipt(response);
+        backToNameInput();
+    }).catch((error) => console.log(error));
+}
+
+function showReceipt(response) {
+    var result = response;
+    var receiptModal = document.getElementById('receipt-modal');
+    var customerName = document.getElementById("name-field").innerHTML;
+    var modalTable = document.getElementById('customer-cart');
+    var totalAmt = 0;
+
+    receiptModal.style.display = "block";
+    modalTable.innerHTML = `<tr>
+    <td colspan="3"><h3>Receipt</h3></td>
+    </tr>
+    <tr>
+    <td colspan="3"><h3>Thank you for your purchase!</h3></td>
+    </tr>
+    <tr>
+    <td>${customerName}</td>
+    </tr>
+    <tr>
+    <td colspan="3"><hr></td>
+    </tr>
+    <tr>
+    <td><b>Qty</b></td>
+    <td><b>Item</b></td>
+    <td><b>Amount</b></td>
+    </tr>
+    `;
+
+    for (var i in result.data) {
+        // Item rows, columns, and data
+        var size = result.data[i].hasOwnProperty('size') ? getSize(result.data[i].size) : '';
+        // Compute for Total
+        totalAmt += parseFloat(result.data[i].price);
+        modalTable.innerHTML += `<tr id="order-item">
+        <td>${result.data[i].qty}</td>
+        <td>${result.data[i].name} ${size} </td>
+        <td>₱${result.data[i].price}</td>
+        </tr>
+        `
+    }
+
+    // Modal footer
+    modalTable.innerHTML += `<tr>
+    <td colspan="3"> <hr> </td>
+    </tr>
+    <tr>
+    <td colspan="3"><b>Total Paid: </b> ₱${totalAmt.toFixed(2)}</td>
+    </tr>
+    <tr>
+    <td colspan="3"><button id="end">Continue</button></td>
+    </tr>
+    `
 }
 
 function getSize(sizeID) {
@@ -478,5 +588,7 @@ function backToNameInput() {
     document.getElementById("name-field").innerHTML = '';
     document.getElementById("item-list").innerHTML = '';
     document.getElementById('float').hidden = true;
-    // document.getElementById("customer-cart").hidden = true;
+    document.getElementById('consumable').value = 'starter';
+    document.getElementById('consumable-type').value = 'starter';
+    // document.getElementById('order-item').remove();
 }
