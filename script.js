@@ -362,7 +362,7 @@ function showCartItems(response) {
 
     // Modal header
     modalTable.innerHTML = `<tr>
-    <td colspan="3"> <h3> Cart </h3> </td>
+    <td colspan="4"> <h3> Cart </h3> </td>
     </tr>
     `;
 
@@ -390,13 +390,13 @@ function showCartItems(response) {
 
     // Modal footer
     modalTable.innerHTML += `<tr>
-    <td colspan="3"> <hr> </td>
+    <td colspan="4"> <hr> </td>
     </tr>
     <tr>
-    <td colspan="3"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
+    <td colspan="4"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
     </tr>
     <tr>
-    <td colspan="3"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
+    <td colspan="4"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
     </tr>
     `
 }
