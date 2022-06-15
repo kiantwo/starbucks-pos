@@ -310,8 +310,6 @@ function addToCart(item, itemMenu) {
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
 
-    console.log(itemMenu);
-
     // Store item details and itemMenu ID
     var itemDetails = {
         'id': itemMenu[0],
@@ -321,6 +319,8 @@ function addToCart(item, itemMenu) {
         'price': itemMenu.price,
         'qty':1
     }
+
+    console.log(itemDetails);
 
     if (consumableType == '100') {
         // Assign size if consumable type beverage
