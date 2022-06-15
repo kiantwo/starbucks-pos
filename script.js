@@ -484,9 +484,10 @@ function checkOut(response) {
         "checkout": true,
         "id": result.data
     }).then(function (response) {
-        clearCart();
         getReceipt(result.data);
-    }).catch((error) => console.log(error));
+        clearCart();
+    })
+        .catch((error) => console.log(error));
 }
 
 function clearCart() {
@@ -517,10 +518,8 @@ function getReceipt(orderID) {
             "order": true,
             "id": id
         }
-    }).then(function (response) {
-        showReceipt(response);
-        backToNameInput();  // Reset interface
-    }).catch((error) => console.log(error));
+    }).then((response) => showReceipt(response))
+        .catch((error) => console.log(error));
 }
 
 function showReceipt(response) {
@@ -573,9 +572,19 @@ function showReceipt(response) {
     <td colspan="3"><b>Total Paid: </b> ₱${totalAmt.toFixed(2)}</td>
     </tr>
     <tr>
-    <td colspan="3"><button id="end">Continue</button></td>
+    <td colspan="3"><button id="end" onclick="completeOrder()">Continue</button></td>
     </tr>
     `
+}
+
+function completeOrder() {
+    // Complete order
+    var receiptModal = document.getElementById('receipt-modal');
+    // Close receipt modal
+    receiptModal.style.display = "none";
+    document.getElementById("customer-name").value = '';
+    // Reset values
+    backToNameInput();
 }
 
 function getSize(sizeID) {
