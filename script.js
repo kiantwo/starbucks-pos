@@ -472,7 +472,7 @@ function startCheckOut() {
     }
 
     else {
-        // Display image if user has no items in cart
+        // Display error if user has no items in cart
         document.getElementById('no-cart-error').innerHTML = 'Please pick items to order.';
     }
 }
