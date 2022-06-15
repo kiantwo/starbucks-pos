@@ -8,7 +8,7 @@ class OrderCart implements IOrderCart {
     private $cartCollection = array();
     private int $totalPrice = 0;
 
-    public function addToCart($item)
+    public function addToCart(IConsumable $item)
     {
         if (Session::has('items')) {
             $temporaryValue = $this->showCart();

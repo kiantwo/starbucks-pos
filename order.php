@@ -7,6 +7,7 @@ use Sessions\Session;
 Session::start();
 
 $cart = new OrderCart;
+$consumableFactory = new ConsumableFactory;
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -14,7 +15,9 @@ if(isset($data['add'])) {
     // Adding Item to Cart
     $item = $data['item'];
     $result = array();
-    $cart->addToCart($item);
+
+    $itemObj = $consumableFactory->createConsumable($item);
+    $cart->addToCart($itemObj);
 
     $result[] = count($_SESSION['items']);
     $result[] = getSessionPrice();
@@ -81,7 +84,8 @@ function getSessionPrice() {
     $session = $_SESSION['items'];
     $sum = 0;
     foreach($session as $key => $value) {
-        $sum += $session[$key]["price"];
+        $item = $session[$key];
+        $sum += $item->getPrice();
     }
 
     return $sum;

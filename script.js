@@ -185,7 +185,7 @@ function showItems(response) {
     var itemList = document.getElementById("item-list");
     var consumableTypeDropdown = document.getElementById("consumable-type");
     var consumableType = consumableTypeDropdown.options[consumableTypeDropdown.selectedIndex].text;
-
+    
     // Header
     itemList.innerHTML = `<tr>
     <td colspan="3"><h2>${consumableType} </h2></td>
@@ -193,7 +193,7 @@ function showItems(response) {
 
     for (var i in result.data) {
         // Item rows, columns, and data
-        var item = [result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
+        var item = [result.data[i][2], result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
         var calories = result.data[i].calories ? `${result.data[i].calories} Calories` : '';
         itemList.innerHTML += `<tr>
         <td width="40%"> <img src="${result.data[i].image}" width="150" height="150"> </td>  
@@ -213,10 +213,11 @@ function showModal() {
     // Store activeElement data to pass
     var item = {
         'id': activeButton.id,
-        'image': activeButtonName[0],
-        'name': activeButtonName[1],
-        'desc': activeButtonName[2],
-        'calories': activeButtonName[3]
+        'type': activeButtonName[0],
+        'image': activeButtonName[1],
+        'name': activeButtonName[2],
+        'desc': activeButtonName[3],
+        'calories': activeButtonName[4]
     };
 
     modal.style.display = "block";
@@ -308,9 +309,11 @@ function addToCart(item, itemMenu) {
     var float = document.getElementById('float');
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
+
     // Store item details and itemMenu ID
     var itemDetails = {
         'id': itemMenu[0],
+        'type': item.type,
         'name': item.name,
         'image': item.image,
         'price': itemMenu.price,
@@ -354,6 +357,8 @@ function showCartItems(response) {
     var result = response;
     var modalTable = document.getElementById('cart-details')
     var subTotal = 0;
+
+    console.log(response);
 
     // Modal header
     modalTable.innerHTML = `<tr>
