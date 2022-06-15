@@ -8,7 +8,7 @@ class OrderCart implements IOrderCart {
     private $cartCollection = array();
     private int $totalPrice = 0;
 
-    public function addToCart($item)
+    public function addToCart(IConsumable $item)
     {
         if (Session::has('items')) {
             $temporaryValue = $this->showCart();
@@ -20,11 +20,15 @@ class OrderCart implements IOrderCart {
         }
     }
 
+    public function update($index, $value)
+    {
+        $_SESSION[$index] = $value;
+    }
+
     public function removeFromCart($item)
     {
         Session::remove('items', $item);
     }
-
     public function showCart()
     {
         return Session::get('items');

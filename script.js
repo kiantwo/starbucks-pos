@@ -28,10 +28,16 @@ function initComponents() {
         modal.style.display = "none";
     })
 
+    closeButtons[2].addEventListener('click', function () {
+        var modal = document.getElementById('receipt-modal');
+        modal.style.display = "none";
+    })
+
     // Close modal onclick of background window
     window.onclick = function (event) {
         var modal = document.getElementById("myModal");
         var cartModal = document.getElementById('cart-modal');
+        var receiptModal = document.getElementById('receipt-modal');
         if (event.target == modal) {
             modal.style.display = "none";
         }
@@ -39,13 +45,19 @@ function initComponents() {
         else if (event.target == cartModal) {
             cartModal.style.display = "none";
         }
+
+        else if (event.target == receiptModal) {
+            receiptModal.style.display = "none";
+        }
     }
     document.getElementById('float').addEventListener('click', showCartModal);
+    document.getElementById('checkout').addEventListener('click', startCheckOut);
     document.getElementById('clear').addEventListener('click', clearCart);
 
 }
 
 function getUserSession() {
+    // Check if user already has session
     axios.get("order.php", {
         params: {
             "session": true,
@@ -53,6 +65,7 @@ function getUserSession() {
     })
         .then(function (response) {
             if (response.data[0] > 0) {
+                // Show elements if user has session
                 var totalAmt = parseFloat(response.data[1]);
                 document.getElementById('total-amt').innerHTML = totalAmt.toFixed(2);
                 document.getElementById('float').hidden = false;
@@ -82,9 +95,9 @@ function submitCustomerName() {
     document.getElementById("customer-choice").hidden = false;
     // document.getElementById("customer-cart").hidden = false;
     document.getElementById("name-input").hidden = true;
+    document.getElementById('no-cart-error').innerHTML = '';
 
     layout += `<table id="name-table" width="500"><tr>
-    <td>Customer ID: 2019010822</td>
     <td>Customer Name: ` + customerName + `</td>
     </tr></table>
     `;
@@ -193,7 +206,7 @@ function showItems(response) {
 
     for (var i in result.data) {
         // Item rows, columns, and data
-        var item = [result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
+        var item = [result.data[i][2], result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
         var calories = result.data[i].calories ? `${result.data[i].calories} Calories` : '';
         itemList.innerHTML += `<tr>
         <td width="40%"> <img src="${result.data[i].image}" width="150" height="150"> </td>  
@@ -213,10 +226,11 @@ function showModal() {
     // Store activeElement data to pass
     var item = {
         'id': activeButton.id,
-        'image': activeButtonName[0],
-        'name': activeButtonName[1],
-        'desc': activeButtonName[2],
-        'calories': activeButtonName[3]
+        'type': activeButtonName[0],
+        'image': activeButtonName[1],
+        'name': activeButtonName[2],
+        'desc': activeButtonName[3],
+        'calories': activeButtonName[4]
     };
 
     modal.style.display = "block";
@@ -298,7 +312,7 @@ function showItemDetails(response, item) {
         }
     });
 
-    // Append to table
+    // Append to itemDetails table
     td.appendChild(button);
     tr.appendChild(td);
     modalTable.appendChild(tr);
@@ -308,12 +322,15 @@ function addToCart(item, itemMenu) {
     var float = document.getElementById('float');
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
+
     // Store item details and itemMenu ID
     var itemDetails = {
         'id': itemMenu[0],
+        'type': item.type,
         'name': item.name,
         'image': item.image,
         'price': itemMenu.price,
+        'qty': 1
     }
 
     if (consumableType == '100') {
@@ -356,7 +373,7 @@ function showCartItems(response) {
 
     // Modal header
     modalTable.innerHTML = `<tr>
-    <td colspan="3"> <h3> Cart </h3> </td>
+    <td colspan="4"> <h3> Cart </h3> </td>
     </tr>
     `;
 
@@ -367,8 +384,16 @@ function showCartItems(response) {
         subTotal += parseFloat(result.data[i].price);
         modalTable.innerHTML += `
         <tr id="cart-item">
+
+        <td>
+        <button id="minus" onClick="addMinusQuanitity()" name="${i}">-</button> 
+            <label for="qty">${result.data[i].qty}</label>
+            <button id="plus" onClick="addMinusQuanitity()" name="${i}">+</button> 
+            
+    
+        </td>
         <td width="20%"> <img src="${result.data[i].image}" width="100" height="100"> </td>
-        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price} </td>
+        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price.toFixed(2)} </td>
         <td> <a href="javascript:void(0)" id="delete-item" name="${i}" onclick="removeFromCart()"> Remove from cart </a>
         </tr>
         `
@@ -376,15 +401,31 @@ function showCartItems(response) {
 
     // Modal footer
     modalTable.innerHTML += `<tr>
-    <td colspan="3"> <hr> </td>
+    <td colspan="4"> <hr> </td>
     </tr>
     <tr>
-    <td colspan="3"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
+    <td colspan="4"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
     </tr>
     <tr>
-    <td colspan="3"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
+    <td colspan="4"><button id="checkout" onclick="startCheckOut()">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
     </tr>
     `
+}
+
+function addMinusQuanitity() {
+    // Remove item from Session Cart
+    var index = this.document.activeElement.name;
+    var method = this.document.activeElement.id;
+
+    // Get index of item in Session Cart
+    axios.all([
+        axios.post("order.php", { "method": method, "index": index }),
+        axios.get("order.php", { params: { "cart": true } })
+    ]).then(function (response) {
+        // Result of Post Request
+        console.log(response);
+        console.log('testing');
+    }).catch((error) => console.log(error));
 }
 
 function removeFromCart() {
@@ -398,7 +439,7 @@ function removeFromCart() {
     ]).then(function (response) {
         var removeResult = response[0];     // Result of Post Request
         var getResult = response[1];        // Result of Get Request
-        if(removeResult.data[0] == 0) {
+        if (removeResult.data[0] == 0) {
             // Reset to defaults and elements if cart is empty
             document.getElementById('float').hidden = true;
             document.getElementById('cart-modal').style.display = "none";
@@ -413,22 +454,137 @@ function removeFromCart() {
     }).catch((error) => console.log(error));
 }
 
+function startCheckOut() {
+    // Store to orderheader table
+    var customerName = document.getElementById('customer-name').value;
+    var todayDate = new Date().toISOString().slice(0, 10);
+    var cartLength = parseInt(document.getElementById('my-float').innerHTML);
+
+    if (cartLength > 0) {
+        // Start checkout if user has items in cart
+        document.getElementById('no-cart-error').innerHTML = '';
+        axios.post("dbquery.php", {
+            "start-checkout": true,
+            "name": customerName,
+            "date": todayDate,
+        }).then((response) => checkOut(response))   // Response returns orderID primary key
+            .catch((error) => console.log(error));
+    }
+
+    else {
+        // Display image if user has no items in cart
+        document.getElementById('no-cart-error').innerHTML = 'Please pick items to order.';
+    }
+}
+
+function checkOut(response) {
+    var result = response;
+    // Store orderID and user name in order-header table
+    axios.post("dbquery.php", {
+        "checkout": true,
+        "id": result.data
+    }).then(function (response) {
+        getReceipt(result.data);
+        clearCart();
+    })
+        .catch((error) => console.log(error));
+}
+
 function clearCart() {
     // Clear all items in Session Cart
     var float = document.getElementById('float');
     var cartModal = document.getElementById('cart-modal');
     var totalAmt = document.getElementById('total-amt');
+    var cartLength = document.getElementById('my-float');
 
     // Reset elements to default
     totalAmt.innerHTML = parseFloat(0).toFixed(2);
     float.hidden = float.hidden == false ? true : true;
     cartModal.style.display = "none";
+    cartLength.innerHTML = null;
 
     axios.post("order.php", {
         "clear": true,
     })
         .then(console.log('Cleared cart'))
         .catch((error) => console.log(error));
+}
+
+function getReceipt(orderID) {
+    var id = orderID;
+    // Get order of user from order-detail table
+    axios.get("dbquery.php", {
+        params: {
+            "order": true,
+            "id": id
+        }
+    }).then((response) => showReceipt(response))
+        .catch((error) => console.log(error));
+}
+
+function showReceipt(response) {
+    // Show Receipt Modal
+    var result = response;
+    var receiptModal = document.getElementById('receipt-modal');
+    var customerName = document.getElementById("name-field").innerHTML;
+    var modalTable = document.getElementById('customer-cart');
+    var totalAmt = 0;
+
+    // Modal Header
+    receiptModal.style.display = "block";
+    modalTable.innerHTML = `<tr>
+    <td colspan="3"><h3>Receipt</h3></td>
+    </tr>
+    <tr>
+    <td colspan="3"><h3>Thank you for your purchase!</h3></td>
+    </tr>
+    <tr>
+    <td colspan="3"><hr></td>
+    </tr>
+    <tr>
+    <td>${customerName}</td>
+    </tr>
+    <tr>
+    <td><b>Qty</b></td>
+    <td><b>Item</b></td>
+    <td><b>Amount</b></td>
+    </tr>
+    `;
+
+    for (var i in result.data) {
+        // Item rows, columns, and data
+        var size = result.data[i].hasOwnProperty('size') ? getSize(result.data[i].size) : '';
+        // Compute for Total
+        totalAmt += parseFloat(result.data[i].price);
+        modalTable.innerHTML += `<tr id="order-item">
+        <td>${result.data[i].qty}</td>
+        <td>${result.data[i].name} ${size} </td>
+        <td>₱${result.data[i].price}</td>
+        </tr>
+        `
+    }
+
+    // Modal footer
+    modalTable.innerHTML += `<tr>
+    <td colspan="3"> <hr> </td>
+    </tr>
+    <tr>
+    <td colspan="3"><b>Total Paid: </b> ₱${totalAmt.toFixed(2)}</td>
+    </tr>
+    <tr>
+    <td colspan="3"><button id="end" onclick="completeOrder()">Continue</button></td>
+    </tr>
+    `
+}
+
+function completeOrder() {
+    // Complete order
+    var receiptModal = document.getElementById('receipt-modal');
+    // Close receipt modal
+    receiptModal.style.display = "none";
+    document.getElementById("customer-name").value = '';
+    // Reset values
+    backToNameInput();
 }
 
 function getSize(sizeID) {
@@ -449,5 +605,7 @@ function backToNameInput() {
     document.getElementById("name-field").innerHTML = '';
     document.getElementById("item-list").innerHTML = '';
     document.getElementById('float').hidden = true;
-    // document.getElementById("customer-cart").hidden = true;
+    document.getElementById('consumable').value = 'starter';
+    document.getElementById('consumable-type').value = 'starter';
+    // document.getElementById('order-item').remove();
 }
