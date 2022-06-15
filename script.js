@@ -310,6 +310,8 @@ function addToCart(item, itemMenu) {
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
 
+    console.log(itemMenu);
+
     // Store item details and itemMenu ID
     var itemDetails = {
         'id': itemMenu[0],
@@ -358,8 +360,6 @@ function showCartItems(response) {
     var modalTable = document.getElementById('cart-details')
     var subTotal = 0;
 
-    console.log(response);
-
     // Modal header
     modalTable.innerHTML = `<tr>
     <td colspan="3"> <h3> Cart </h3> </td>
@@ -382,7 +382,7 @@ function showCartItems(response) {
     
         </td>
         <td width="20%"> <img src="${result.data[i].image}" width="100" height="100"> </td>
-        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price} </td>
+        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price.toFixed(2)} </td>
         <td> <a href="javascript:void(0)" id="delete-item" name="${i}" onclick="removeFromCart()"> Remove from cart </a>
         </tr>
         `
