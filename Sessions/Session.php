@@ -4,7 +4,7 @@ namespace Sessions;
 class Session {
      
     public static function start(){
-        session_save_path('../Sessions');
+        session_save_path('./');
         session_start();
     } 
 

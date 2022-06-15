@@ -7,6 +7,7 @@ use Sessions\Session;
 Session::start();
 
 $cart = new OrderCart;
+$consumableFactory = new ConsumableFactory;
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -14,7 +15,9 @@ if(isset($data['add'])) {
     // Adding Item to Cart
     $item = $data['item'];
     $result = array();
-    $cart->addToCart($item);
+
+    $itemObj = $consumableFactory->createConsumable($item);
+    $cart->addToCart($itemObj);
 
     $result[] = count($_SESSION['items']);
     $result[] = getSessionPrice();
@@ -60,13 +63,29 @@ else if(isset($_GET['session'])) {
         echo false;
     }
 }
+else if(isset($data['method'])){
+    $itemIndex = $data['index'];
+    $method = $data['method'];
+    $session = $_SESSION['items'];
+
+    if($method == 'plus'){
+        $cart->update('qty', $session[$itemIndex]['qty']++);
+        // $_SESSION['qty'] =+ 1;
+    }
+    else{
+        $session[$itemIndex]['qty']--;
+    }
+    $jsonResult = json_encode( $session[$itemIndex]['qty']);
+    echo  $session[$itemIndex]['qty'];
+}
 
 function getSessionPrice() {
     // Get sum of all item prices in cart
     $session = $_SESSION['items'];
     $sum = 0;
     foreach($session as $key => $value) {
-        $sum += $session[$key]["price"];
+        $item = $session[$key];
+        $sum += $item->getPrice();
     }
 
     return $sum;

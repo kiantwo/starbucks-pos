@@ -184,7 +184,7 @@ function showItems(response) {
     var itemList = document.getElementById("item-list");
     var consumableTypeDropdown = document.getElementById("consumable-type");
     var consumableType = consumableTypeDropdown.options[consumableTypeDropdown.selectedIndex].text;
-
+    
     // Header
     itemList.innerHTML = `<tr>
     <td colspan="3"><h2>${consumableType} </h2></td>
@@ -192,7 +192,7 @@ function showItems(response) {
 
     for (var i in result.data) {
         // Item rows, columns, and data
-        var item = [result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
+        var item = [result.data[i][2], result.data[i].image, result.data[i][3], result.data[i][4], result.data[i].calories];
         var calories = result.data[i].calories ? `${result.data[i].calories} Calories` : '';
         itemList.innerHTML += `<tr>
         <td width="40%"> <img src="${result.data[i].image}" width="150" height="150"> </td>  
@@ -212,10 +212,11 @@ function showModal() {
     // Store activeElement data to pass
     var item = {
         'id': activeButton.id,
-        'image': activeButtonName[0],
-        'name': activeButtonName[1],
-        'desc': activeButtonName[2],
-        'calories': activeButtonName[3]
+        'type': activeButtonName[0],
+        'image': activeButtonName[1],
+        'name': activeButtonName[2],
+        'desc': activeButtonName[3],
+        'calories': activeButtonName[4]
     };
 
     modal.style.display = "block";
@@ -307,12 +308,17 @@ function addToCart(item, itemMenu) {
     var float = document.getElementById('float');
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
+
+    console.log(itemMenu);
+
     // Store item details and itemMenu ID
     var itemDetails = {
         'id': itemMenu[0],
+        'type': item.type,
         'name': item.name,
         'image': item.image,
         'price': itemMenu.price,
+        'qty':1
     }
 
     if (consumableType == '100') {
@@ -355,7 +361,7 @@ function showCartItems(response) {
 
     // Modal header
     modalTable.innerHTML = `<tr>
-    <td colspan="3"> <h3> Cart </h3> </td>
+    <td colspan="4"> <h3> Cart </h3> </td>
     </tr>
     `;
 
@@ -366,8 +372,16 @@ function showCartItems(response) {
         subTotal += parseFloat(result.data[i].price);
         modalTable.innerHTML += `
         <tr id="cart-item">
+
+        <td>
+        <button id="minus" onClick="addMinusQuanitity()" name="${i}">-</button> 
+            <label for="qty">${result.data[i].qty}</label>
+            <button id="plus" onClick="addMinusQuanitity()" name="${i}">+</button> 
+            
+    
+        </td>
         <td width="20%"> <img src="${result.data[i].image}" width="100" height="100"> </td>
-        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price} </td>
+        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price.toFixed(2)} </td>
         <td> <a href="javascript:void(0)" id="delete-item" name="${i}" onclick="removeFromCart()"> Remove from cart </a>
         </tr>
         `
@@ -375,15 +389,31 @@ function showCartItems(response) {
 
     // Modal footer
     modalTable.innerHTML += `<tr>
-    <td colspan="3"> <hr> </td>
+    <td colspan="4"> <hr> </td>
     </tr>
     <tr>
-    <td colspan="3"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
+    <td colspan="4"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
     </tr>
     <tr>
-    <td colspan="3"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
+    <td colspan="4"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
     </tr>
     `
+}
+
+function addMinusQuanitity() {
+    // Remove item from Session Cart
+    var index = this.document.activeElement.name;  
+    var method = this.document.activeElement.id;
+    
+    // Get index of item in Session Cart
+    axios.all([
+        axios.post("order.php", { "method": method,"index" : index}),
+        axios.get("order.php", { params: { "cart": true } })
+    ]).then(function (response) {
+           // Result of Post Request
+        console.log(response);
+        console.log('testing');
+    }).catch((error) => console.log(error));
 }
 
 function removeFromCart() {
