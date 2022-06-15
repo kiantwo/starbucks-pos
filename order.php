@@ -60,6 +60,21 @@ else if(isset($_GET['session'])) {
         echo false;
     }
 }
+else if(isset($data['method'])){
+    $itemIndex = $data['index'];
+    $method = $data['method'];
+    $session = $_SESSION['items'];
+
+    if($method == 'plus'){
+        $cart->update('qty', $session[$itemIndex]['qty']++);
+        // $_SESSION['qty'] =+ 1;
+    }
+    else{
+        $session[$itemIndex]['qty']--;
+    }
+    $jsonResult = json_encode( $session[$itemIndex]['qty']);
+    echo  $session[$itemIndex]['qty'];
+}
 
 function getSessionPrice() {
     // Get sum of all item prices in cart

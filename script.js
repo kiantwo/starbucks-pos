@@ -314,6 +314,7 @@ function addToCart(item, itemMenu) {
         'name': item.name,
         'image': item.image,
         'price': itemMenu.price,
+        'qty':1
     }
 
     if (consumableType == '100') {
@@ -367,6 +368,14 @@ function showCartItems(response) {
         subTotal += parseFloat(result.data[i].price);
         modalTable.innerHTML += `
         <tr id="cart-item">
+
+        <td>
+        <button id="minus" onClick="addMinusQuanitity()" name="${i}">-</button> 
+            <label for="qty">${result.data[i].qty}</label>
+            <button id="plus" onClick="addMinusQuanitity()" name="${i}">+</button> 
+            
+    
+        </td>
         <td width="20%"> <img src="${result.data[i].image}" width="100" height="100"> </td>
         <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price} </td>
         <td> <a href="javascript:void(0)" id="delete-item" name="${i}" onclick="removeFromCart()"> Remove from cart </a>
@@ -385,6 +394,22 @@ function showCartItems(response) {
     <td colspan="3"><button id="checkout">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
     </tr>
     `
+}
+
+function addMinusQuanitity() {
+    // Remove item from Session Cart
+    var index = this.document.activeElement.name;  
+    var method = this.document.activeElement.id;
+    
+    // Get index of item in Session Cart
+    axios.all([
+        axios.post("order.php", { "method": method,"index" : index}),
+        axios.get("order.php", { params: { "cart": true } })
+    ]).then(function (response) {
+           // Result of Post Request
+        console.log(response);
+        console.log('testing');
+    }).catch((error) => console.log(error));
 }
 
 function removeFromCart() {

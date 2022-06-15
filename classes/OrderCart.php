@@ -20,11 +20,15 @@ class OrderCart implements IOrderCart {
         }
     }
 
+    public function update($index, $value)
+    {
+        $_SESSION[$index] = $value;
+    }
+
     public function removeFromCart($item)
     {
         Session::remove('items', $item);
     }
-
     public function showCart()
     {
         return Session::get('items');
