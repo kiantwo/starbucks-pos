@@ -24,6 +24,7 @@ class Beverage implements IConsumable, JsonSerializable {
 
     public function jsonSerialize()
     {
+        // Get protected attributes for json_encode
         return get_object_vars($this);
     }
 
