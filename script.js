@@ -84,7 +84,6 @@ function submitCustomerName() {
     document.getElementById("name-input").hidden = true;
 
     layout += `<table id="name-table" width="500"><tr>
-    <td>Customer ID: 2019010822</td>
     <td>Customer Name: ` + customerName + `</td>
     </tr></table>
     `;
