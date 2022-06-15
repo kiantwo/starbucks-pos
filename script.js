@@ -57,6 +57,7 @@ function initComponents() {
 }
 
 function getUserSession() {
+    // Check if user already has session
     axios.get("order.php", {
         params: {
             "session": true,
@@ -64,6 +65,7 @@ function getUserSession() {
     })
         .then(function (response) {
             if (response.data[0] > 0) {
+                // Show elements if user has session
                 var totalAmt = parseFloat(response.data[1]);
                 document.getElementById('total-amt').innerHTML = totalAmt.toFixed(2);
                 document.getElementById('float').hidden = false;
@@ -310,7 +312,7 @@ function showItemDetails(response, item) {
         }
     });
 
-    // Append to table
+    // Append to itemDetails table
     td.appendChild(button);
     tr.appendChild(td);
     modalTable.appendChild(tr);
@@ -459,23 +461,25 @@ function startCheckOut() {
     var cartLength = parseInt(document.getElementById('my-float').innerHTML);
 
     if (cartLength > 0) {
+        // Start checkout if user has items in cart
         document.getElementById('no-cart-error').innerHTML = '';
         axios.post("dbquery.php", {
             "start-checkout": true,
             "name": customerName,
             "date": todayDate,
-        }).then((response) => checkOut(response))
+        }).then((response) => checkOut(response))   // Response returns orderID primary key
             .catch((error) => console.log(error));
     }
 
     else {
+        // Display image if user has no items in cart
         document.getElementById('no-cart-error').innerHTML = 'Please pick items to order.';
     }
 }
 
 function checkOut(response) {
     var result = response;
-
+    // Store orderID and user name in order-header table
     axios.post("dbquery.php", {
         "checkout": true,
         "id": result.data
@@ -507,7 +511,7 @@ function clearCart() {
 
 function getReceipt(orderID) {
     var id = orderID;
-
+    // Get order of user from order-detail table
     axios.get("dbquery.php", {
         params: {
             "order": true,
@@ -515,17 +519,19 @@ function getReceipt(orderID) {
         }
     }).then(function (response) {
         showReceipt(response);
-        backToNameInput();
+        backToNameInput();  // Reset interface
     }).catch((error) => console.log(error));
 }
 
 function showReceipt(response) {
+    // Show Receipt Modal
     var result = response;
     var receiptModal = document.getElementById('receipt-modal');
     var customerName = document.getElementById("name-field").innerHTML;
     var modalTable = document.getElementById('customer-cart');
     var totalAmt = 0;
 
+    // Modal Header
     receiptModal.style.display = "block";
     modalTable.innerHTML = `<tr>
     <td colspan="3"><h3>Receipt</h3></td>
