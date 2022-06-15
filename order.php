@@ -15,12 +15,12 @@ if(isset($data['add'])) {
     // Adding Item to Cart
     $item = $data['item'];
     $result = array();
-
+    // Build consumable object first before storing to cart
     $itemObj = $consumableFactory->createConsumable($item);
     $cart->addToCart($itemObj);
 
-    $result[] = count($_SESSION['items']);
-    $result[] = getSessionPrice();
+    $result[] = count($_SESSION['items']);  // Store updated count of items in cart to result
+    $result[] = getSessionPrice();  // Store updated price of all items in cart to result
 
     $jsonResult = json_encode($result);
     echo $jsonResult;
@@ -32,8 +32,8 @@ else if(isset($data['remove'])) {
     $result = array();
     $cart->removeFromCart($itemIndex);
 
-    $result[] = count($_SESSION['items']);
-    $result[] = getSessionPrice();
+    $result[] = count($_SESSION['items']);  // Store updated count of items in cart to result
+    $result[] = getSessionPrice();  // Store upated price of all items in cart to result
 
     $jsonResult = json_encode($result);
     echo $jsonResult;
@@ -56,10 +56,11 @@ else if(isset($_GET['session'])) {
         $result = array();
         $result[] = count($_SESSION['items']);
         $result[] = getSessionPrice();
-
+        // Return session info if it exists
         $jsonResult = json_encode($result);
         echo $jsonResult;
     } else {
+        // Return false if it doesn't
         echo false;
     }
 }

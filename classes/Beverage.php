@@ -28,12 +28,52 @@ class Beverage implements IConsumable, JsonSerializable {
         return get_object_vars($this);
     }
 
+    public function setID($id) {
+        $this->id = $id;
+    }
+
+    public function getID() {
+        return $this->id;
+    }
+
     public function setName($name) {
         $this->name = $name;
     }
 
     public function getName() {
         return $this->name;
+    }
+
+    public function setDesc($desc) {
+        $this->desc = $desc;
+    }
+
+    public function getDesc() {
+        return $this->desc;
+    }
+
+    public function setCalories($calories) {
+        $this->calories = $calories;
+    }
+
+    public function getCalories() {
+        return $this->calories;
+    }
+
+    public function setImage($image) {
+        $this->image = $image;
+    }
+
+    public function getImage() {
+        return $this->image;
+    }
+
+    public function setSize($size) {
+        $this->size = $size;
+    }
+
+    public function getSize() {
+        return $this->size;
     }
 
     public function setPrice($price) {

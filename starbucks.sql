@@ -72,6 +72,28 @@ CREATE TABLE food_menu(
 	on delete set null on update cascade
 );
 
+DROP TABLE IF EXISTS order_header;
+CREATE TABLE order_header(
+	orderID int not null auto_increment,
+    customerName char(50) not null,
+    orderDate date not null,
+    primary key(orderID)
+);
+
+DROP TABLE IF EXISTS order_detail;
+CREATE TABLE order_detail(
+	orderID int,
+    bevMenuID char(3),
+    foodMenuID char(3),
+    price decimal(7,2) not null,
+    qty int not null,
+	foreign key (orderID) references order_header (orderID) on delete cascade on update cascade,
+	foreign key (bevMenuID) references beverage_menu (bevMenuID) on delete cascade on update cascade,
+    foreign key (foodMenuID) references food_menu (foodMenuID) on delete cascade on update cascade
+);
+
+alter table order_header auto_increment=180;
+
 insert into consumable values('100', 'Beverage');
 insert into consumable values('101', 'Food');
 
@@ -355,11 +377,36 @@ select * from beverage_type;
 select * from beverage_size;
 select * from beverage_menu;
 
+select * from food;
+select * from food_type;
+select * from food_menu;
+
+select * from order_header;
+select * from order_detail;
+
+select * from food_menu where foodMenuID='171' or foodMenuID='172' or foodMenuID='175';
+
+insert into order_header values(DEFAULT, 'Kian', '2022-06-14');
+insert into order_header values(DEFAULT, 'Vince', '2022-06-14');
+
+delete from order_header where orderID=184;
+
+insert into order_detail values(180, '277', null, 170.00, 1);
+insert into order_detail values(180, null, '171', 170.00, 1);
+insert into order_detail values(181, '205', null, 145.00, 1);
+
+select oh.orderID, oh.customerName, oh.orderDate, beverageName, s.bevSizeName, od.price, od.qty
+from order_header oh inner join order_detail od on oh.orderID = od.orderID
+inner join beverage_menu m on od.bevMenuID = m.bevMenuID
+inner join beverage_size s on m.bevSizeID = s.bevSizeID
+inner join beverage b on m.beverageID = b.beverageID
+where oh.orderID = '180';
+
+select oh.orderID, bevMenuID, foodMenuID, price, qty 
+from order_header oh inner join order_detail od on oh.orderID = od.orderID
+where oh.orderID = '180';
+
 select b.beverageID, beverageName, s.bevSizeName, m.price from beverage b
 inner join beverage_menu m on b.beverageID = m.beverageID
 inner join beverage_size s on m.bevSizeID = s.bevSizeID
 where b.beverageID = '141';
-
-select * from food;
-select * from food_type;
-select * from food_menu;
