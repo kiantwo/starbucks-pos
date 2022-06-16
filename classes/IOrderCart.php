@@ -5,5 +5,4 @@ interface IOrderCart {
     public function removeFromCart($item);
     public function showCart();
     public function clearCart();
-    public function checkout();
 }

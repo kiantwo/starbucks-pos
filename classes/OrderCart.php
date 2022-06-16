@@ -37,9 +37,4 @@ class OrderCart implements IOrderCart {
     public function clearCart() {
         return Session::stop();
     }
-
-    public function checkOut()
-    {
-        return Session::stop();
-    }
 }
