@@ -323,6 +323,7 @@ function addToCart(item, itemMenu) {
     var float = document.getElementById('float');
     var consumableType = document.getElementById("consumable").value;
     float.hidden = float.hidden == true ? false : false;
+    document.getElementById('no-cart-error').innerHTML = '';
 
     // Store item details and itemMenu ID
     var itemDetails = {
