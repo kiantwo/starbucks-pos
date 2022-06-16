@@ -81,7 +81,7 @@ function submitCustomerName() {
     var layout = '';
 
     // Prompt error message if empty
-    if (customerName == "") {
+    if (!customerName ||  /^\s*$/.test(customerName)) {
         document.getElementById("error-message").innerHTML =
             "Please enter your name.";
         return;
