@@ -93,9 +93,10 @@ function submitCustomerName() {
     // Show order choices
     document.getElementById("error-message").innerHTML = "";
     document.getElementById("customer-choice").hidden = false;
-    // document.getElementById("customer-cart").hidden = false;
     document.getElementById("name-input").hidden = true;
     document.getElementById('no-cart-error').innerHTML = '';
+    document.getElementById('checkout').disabled = false;
+    document.getElementById('clear').disabled = false;
 
     layout += `<table id="name-table" width="500"><tr>
     <td>Customer Name: ` + customerName + `</td>
@@ -607,5 +608,7 @@ function backToNameInput() {
     document.getElementById('float').hidden = true;
     document.getElementById('consumable').value = 'starter';
     document.getElementById('consumable-type').value = 'starter';
-    // document.getElementById('order-item').remove();
+    document.getElementById('consumable-type').hidden = true;
+    document.getElementById('checkout').disabled = true;
+    document.getElementById('clear').disabled = true;
 }
