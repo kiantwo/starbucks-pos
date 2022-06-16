@@ -79,6 +79,10 @@ td {
     text-align: center;
 }
 
+input[type=text] {
+    border-radius: 5px;
+}
+
 .float{
 	position:fixed;
 	width:60px;
@@ -86,7 +90,7 @@ td {
 	bottom:40px;
 	right:40px;
 	background-color: white;
-	color:rgb(131, 131, 131);
+	color:rgb(0, 0, 0);
 	border-radius:50px;
 	text-align:center;
 	box-shadow: 2px 2px 3px #999;
@@ -94,8 +98,31 @@ td {
 
 .my-float{
 	margin-top:20px;
+    margin-left: 3px;
     font-weight: bold;
     font-size: 14pt;
+}
+
+#cart-count {
+    font-weight: bold;
+    font-size: 10pt;
+    color: rgb(69, 189, 69);
+}
+
+a:link {
+    text-decoration: none;
+  }
+  
+a:visited {
+    text-decoration: none;
+}
+  
+a:hover {
+    text-decoration: none;
+}
+  
+a:active {
+    text-decoration: none;
 }
 
 td > h3, td > h2, td > p {
@@ -115,6 +142,7 @@ img {
     width: 750px;
     height: auto;
     border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 #error-message, 
@@ -155,7 +183,20 @@ img {
     animation-name: animatetop;
     animation-duration: 0.4s;
 }
-  
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {  /*safari and chrome*/
+    select {
+        height:30px;
+        line-height:30px;
+        background:#f4f4f4;
+        border-radius: 15px;
+    } 
+}
+select::-moz-focus-inner { /*Remove button padding in FF*/ 
+    border: 0;
+    padding: 0;
+}
+
   /* The Close Button */
 .close {
     color: #aaa;
@@ -185,7 +226,7 @@ img {
 #cart-item {
     height: 100%;
     width: 100%;
-    background-color: rgb(228, 228, 228);
+    background-color: rgb(235, 235, 235);
 }
 
 #delete-item {

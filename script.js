@@ -69,7 +69,7 @@ function getUserSession() {
                 var totalAmt = parseFloat(response.data[1]);
                 document.getElementById('total-amt').innerHTML = totalAmt.toFixed(2);
                 document.getElementById('float').hidden = false;
-                document.getElementById('my-float').innerHTML = response.data[0];
+                document.getElementById('cart-count').innerHTML = response.data[0];
             }
         })
         .catch((error) => console.log(error));
@@ -344,7 +344,7 @@ function addToCart(item, itemMenu) {
         "item": itemDetails,
     })
         .then(function (response) {
-            document.getElementById('my-float').innerHTML = response.data[0];   // Number of items in cart
+            document.getElementById('cart-count').innerHTML = response.data[0];   // Number of items in cart
             document.getElementById('total-amt').innerHTML = response.data[1].toFixed(2);   // Sum of all item prices
         })
         .catch((error) => console.log(error));
@@ -446,7 +446,7 @@ function removeFromCart() {
         }
         else {
             // Display updated count of items in Session Cart
-            document.getElementById('my-float').innerHTML = removeResult.data[0];
+            document.getElementById('cart-count').innerHTML = removeResult.data[0];
         }
         // Display new Total Amount
         document.getElementById('total-amt').innerHTML = removeResult.data[1].toFixed(2);
@@ -458,7 +458,7 @@ function startCheckOut() {
     // Store to orderheader table
     var customerName = document.getElementById('customer-name').value;
     var todayDate = new Date().toISOString().slice(0, 10);
-    var cartLength = parseInt(document.getElementById('my-float').innerHTML);
+    var cartLength = parseInt(document.getElementById('cart-count').innerHTML);
 
     if (cartLength > 0) {
         // Start checkout if user has items in cart
@@ -495,7 +495,7 @@ function clearCart() {
     var float = document.getElementById('float');
     var cartModal = document.getElementById('cart-modal');
     var totalAmt = document.getElementById('total-amt');
-    var cartLength = document.getElementById('my-float');
+    var cartLength = document.getElementById('cart-count');
 
     // Reset elements to default
     totalAmt.innerHTML = parseFloat(0).toFixed(2);
