@@ -25,10 +25,11 @@ span a{
   color:black;
 }
 .logo{
-  position: absolute;
-  top: 15px;
-  left: 500px;
-  margin: 0 auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: 0;
 }
 .nav-area{
     list-style: none;
@@ -137,6 +138,7 @@ img {
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
+    border-radius: 20px;
     width: 80%; /* Could be more or less, depending on screen size */
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
