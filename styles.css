@@ -2,7 +2,56 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(15, 44, 15);
 }
-
+button{
+  border-radius: 16px;
+  background-color: white;
+  border: 1px solid black;
+  transition-duration: 0.4s;
+  padding: 5px 10px;
+}
+button:hover{
+  background-color: rgb(15, 44, 15); /* Green */
+  color: white;
+}
+option{
+  background-color: rgb(15, 44, 15);
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+span a{
+  color:black;
+}
+.logo{
+  position: absolute;
+  top: 15px;
+  left: 500px;
+  margin: 0 auto;
+}
+.nav-area{
+    list-style: none;
+    padding-right: 10px;  
+}
+.nav-area li{
+    display: inline-block;
+}
+.nav-area li a{
+  border: none;
+  color: black;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  font-family: Verdana, Arial, sans-serif;
+  transition-duration: 0.4s;
+}
+.nav-area li a:hover{
+  background-color: white; 
+  color: green;
+}
 /* table,
 th,
 td,
@@ -55,6 +104,7 @@ img {
     text-align: center;
     width: 750px;
     height: auto;
+    border-radius: 20px;
 }
 
 #error-message, 
@@ -92,7 +142,7 @@ img {
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
-    animation-duration: 0.4s
+    animation-duration: 0.4s;
 }
   
   /* The Close Button */
