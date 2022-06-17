@@ -267,7 +267,7 @@ function showItemDetails(response, item) {
     if (consumableType == '100') {
         // Details if Consumable is Beverage
         modalTable.innerHTML += `
-        <td>
+        <td width="650px">
         ${item.desc}
         <h3>Choose beverage size: </h3>
         <div id="confirm-error"></div>
@@ -285,7 +285,7 @@ function showItemDetails(response, item) {
 
     else {
         // Details if Consumable is Food
-        modalTable.innerHTML += `<td>${item.desc}</td>
+        modalTable.innerHTML += `<td width="650px">${item.desc}</td>
         <tr>
         <td>Price: <b>₱${result.data[0].price}<b></td>
         </tr>
