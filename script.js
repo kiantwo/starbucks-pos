@@ -611,4 +611,5 @@ function backToNameInput() {
     document.getElementById('consumable-type').hidden = true;
     document.getElementById('checkout').disabled = true;
     document.getElementById('clear').disabled = true;
+    document.getElementById('total-amt').innerHTML = parseFloat(0).toFixed(2);
 }
