@@ -599,7 +599,7 @@ function getSize(sizeID) {
 }
 
 function backToNameInput() {
-    // Show order choices
+    // Reset all elements back to default
     document.getElementById("error-message").innerHTML = "";
     document.getElementById("customer-choice").hidden = true;
     document.getElementById("name-input").hidden = false;
