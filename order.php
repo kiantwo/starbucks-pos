@@ -8,9 +8,9 @@ Session::start();
 
 $cart = new OrderCart;
 $consumableFactory = new ConsumableFactory;
-
+// Catch $_POST data
 $data = json_decode(file_get_contents("php://input"), true);
-
+// POST requests
 if(isset($data['add'])) {
     // Adding Item to Cart
     $item = $data['item'];

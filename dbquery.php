@@ -13,7 +13,7 @@ try {
 }
 
 $db = new DBLibrary($dbSource);
-
+// Catch $_POST data
 $data = json_decode(file_get_contents("php://input"), true);
 
 if(isset($_GET['consumables'])) {
@@ -87,7 +87,7 @@ else if(isset($_GET['order'])) {
     $jsonResult = json_encode($result);
     echo $jsonResult;
 }
-
+// POST requests
 if(isset($data['start-checkout'])) {
     // Store orderID and user name to order-header table
     $customerName = $data['name'];
