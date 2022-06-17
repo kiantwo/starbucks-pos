@@ -81,7 +81,7 @@ function submitCustomerName() {
     var layout = '';
 
     // Prompt error message if empty
-    if (!customerName ||  /^\s*$/.test(customerName)) {
+    if (!customerName || /^\s*$/.test(customerName)) {
         document.getElementById("error-message").innerHTML =
             "Please enter your name.";
         return;
@@ -441,15 +441,14 @@ function removeFromCart() {
     ]).then(function (response) {
         var removeResult = response[0];     // Result of Post Request
         var getResult = response[1];        // Result of Get Request
+
         if (removeResult.data[0] == 0) {
             // Reset to defaults and elements if cart is empty
             document.getElementById('float').hidden = true;
             document.getElementById('cart-modal').style.display = "none";
         }
-        else {
-            // Display updated count of items in Session Cart
-            document.getElementById('cart-count').innerHTML = removeResult.data[0];
-        }
+        // Update count of items in Session Cart
+        document.getElementById('cart-count').innerHTML = removeResult.data[0];
         // Display new Total Amount
         document.getElementById('total-amt').innerHTML = removeResult.data[1].toFixed(2);
         showCartItems(getResult);
