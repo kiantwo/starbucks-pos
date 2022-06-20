@@ -10,12 +10,6 @@ function initComponents() {
     document.getElementById("consumable").addEventListener('change', getConsumableTypes);
     document.getElementById("consumable-type").addEventListener('change', getItems);
     // Close modal onclick of X
-    document.getElementsByClassName("close")[0].addEventListener('click',
-        function () {
-            var modal = document.getElementById("myModal")
-            modal.style.display = "none";
-        });
-
     var closeButtons = document.getElementsByClassName('close');
 
     closeButtons[0].addEventListener('click', function () {
@@ -382,20 +376,21 @@ function showCartItems(response) {
     for (var i in result.data) {
         // Item rows, columns, and data
         var size = result.data[i].hasOwnProperty('size') ? getSize(result.data[i].size) : '';
+        var price = result.data[i].price * result.data[i].qty;
         // Compute for Sub Total
-        subTotal += parseFloat(result.data[i].price);
+        subTotal += parseFloat(price);
         modalTable.innerHTML += `
         <tr id="cart-item">
 
         <td>
         <button id="minus" onClick="addMinusQuanitity()" name="${i}">-</button> 
-            <label for="qty">${result.data[i].qty}</label>
-            <button id="plus" onClick="addMinusQuanitity()" name="${i}">+</button> 
+        <label for="qty">${result.data[i].qty}</label>
+        <button id="plus" onClick="addMinusQuanitity()" name="${i}">+</button> 
             
     
         </td>
         <td width="20%"> <img src="${result.data[i].image}" width="100" height="100"> </td>
-        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${result.data[i].price.toFixed(2)} </td>
+        <td> <h3> ${result.data[i].name} </h3> <p> ${size} </p> Price: ₱${price.toFixed(2)} </td>
         <td> <a href="javascript:void(0)" id="delete-item" name="${i}" onclick="removeFromCart()"> Remove from cart </a>
         </tr>
         `
@@ -409,7 +404,7 @@ function showCartItems(response) {
     <td colspan="4"><b>Sub Total: </b> ₱${subTotal.toFixed(2)}</td>
     </tr>
     <tr>
-    <td colspan="4"><button id="checkout" onclick="startCheckOut()">Check Out</button> <button id="clear" onclick="clearCart()">Clear Cart</button></td>
+    <td colspan="4"><button id="checkout-modal" onclick="startCheckOut()">Check Out</button> <button id="clear-modal" onclick="clearCart()">Clear Cart</button></td>
     </tr>
     `
 }
@@ -424,9 +419,11 @@ function addMinusQuanitity() {
         axios.post("order.php", { "method": method, "index": index }),
         axios.get("order.php", { params: { "cart": true } })
     ]).then(function (response) {
-        // Result of Post Request
-        console.log(response);
-        console.log('testing');
+        var qtyResult = response[0];
+        var getResult = response[1];
+        // Display new Total Amount
+        document.getElementById('total-amt').innerHTML = qtyResult.data.toFixed(2);
+        showCartItems(getResult);
     }).catch((error) => console.log(error));
 }
 

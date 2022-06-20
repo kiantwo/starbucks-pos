@@ -20,6 +20,10 @@ class OrderCart implements IOrderCart {
         }
     }
 
+    public function getItem($index) {
+        return Session::get('items', $index);
+    }
+
     public function update($index, $value)
     {
         $_SESSION[$index] = $value;
@@ -29,9 +33,23 @@ class OrderCart implements IOrderCart {
     {
         Session::remove('items', $item);
     }
+
     public function showCart()
     {
         return Session::get('items');
+    }
+
+    public function getCartCost() {
+        // Get sum of all item prices in cart
+        $cart = $this->showCart();
+        $sum = 0;
+        foreach($cart as $key => $value) {
+            $item = $cart[$key];
+            $itemPrice = $item->getPrice();
+            $itemQty = $item->getQty();
+            $sum = $sum + ($itemPrice * $itemQty);
+        }
+        return $sum;
     }
 
     public function clearCart() {

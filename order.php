@@ -20,7 +20,7 @@ if(isset($data['add'])) {
     $cart->addToCart($itemObj);
 
     $result[] = count($_SESSION['items']);  // Store updated count of items in cart to result
-    $result[] = getSessionPrice();  // Store updated price of all items in cart to result
+    $result[] = $cart->getCartCost();  // Store updated price of all items in cart to result
 
     $jsonResult = json_encode($result);
     echo $jsonResult;
@@ -33,7 +33,7 @@ else if(isset($data['remove'])) {
     $cart->removeFromCart($itemIndex);
 
     $result[] = count($_SESSION['items']);  // Store updated count of items in cart to result
-    $result[] = getSessionPrice();  // Store upated price of all items in cart to result
+    $result[] = $cart->getCartCost();  // Store updated price of all items in cart to result
 
     $jsonResult = json_encode($result);
     echo $jsonResult;
@@ -55,7 +55,7 @@ else if(isset($_GET['session'])) {
     if (Session::has('items')) {
         $result = array();
         $result[] = count($_SESSION['items']);
-        $result[] = getSessionPrice();
+        $result[] = $cart->getCartCost();
         // Return session info if it exists
         $jsonResult = json_encode($result);
         echo $jsonResult;
@@ -68,26 +68,17 @@ else if(isset($data['method'])){
     $itemIndex = $data['index'];
     $method = $data['method'];
     $session = $_SESSION['items'];
+    $item = $cart->getItem($itemIndex);
+    $itemQty = $item->getQty();
 
     if($method == 'plus'){
-        $cart->update('qty', $session[$itemIndex]['qty']++);
-        // $_SESSION['qty'] =+ 1;
+        $item->setQty($itemQty + 1);
     }
     else{
-        $session[$itemIndex]['qty']--;
-    }
-    $jsonResult = json_encode( $session[$itemIndex]['qty']);
-    echo  $session[$itemIndex]['qty'];
-}
-
-function getSessionPrice() {
-    // Get sum of all item prices in cart
-    $session = $_SESSION['items'];
-    $sum = 0;
-    foreach($session as $key => $value) {
-        $item = $session[$key];
-        $sum += $item->getPrice();
+        $item->setQty($itemQty - 1);
     }
 
-    return $sum;
+    $result = $cart->getCartCost();  // Store updated price of all items in cart to result
+    $jsonResult = json_encode($result);
+    echo $jsonResult;
 }

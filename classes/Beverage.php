@@ -85,7 +85,9 @@ class Beverage implements IConsumable, JsonSerializable {
     }
 
     public function setQty($qty) {
-        $this->qty = $qty;
+        if($qty > 0) {
+            $this->qty = $qty;
+        }
     }
 
     public function getQty() {
