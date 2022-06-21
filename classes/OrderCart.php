@@ -24,11 +24,6 @@ class OrderCart implements IOrderCart {
         return Session::get('items', $index);
     }
 
-    public function update($index, $value)
-    {
-        $_SESSION[$index] = $value;
-    }
-
     public function removeFromCart($item)
     {
         Session::remove('items', $item);
